@@ -1,0 +1,34 @@
+language: elixir
+dist: trusty
+
+elixir:
+  - 1.9.2
+
+services:
+  - docker
+
+env:
+  global:
+    - secure: dMnnc3L/cjtLA6X3BmwpEE5zkpEyG7GJVFcmLPpavdol8QBqEnb1luqY3zjfjDbecsjlKohdqADqd5CLasevCVJjkUaWsuSmgeDnj3K+iuUA3AMKfNb4nWLNc5hb1ys1sG29pCIIBMRMaJbFFnMSeez2G3LE9pgPcfWT+dRyxBjExS8w/amw8UM/IG9g7W2/3UiZk3sx2Mwm8iSCtcXQEF7o2PBk3zmCE6Vum5VFiOkNyIzSkxDLC+NHCQHg6JPu6yw+i8ijQSxO1PkPwhAfVRMIx/R82+dvoDbiFslICJfEFmR2QBoNGPnVW7OHCczS+0s9+ZMpcxmSxu0IL7TnOCS6LIsNkP5f4XTfBD8FgadYZpb+qa3Pqn6kvr5jTKIOTUfisn601f+tTl9oxxuIHGu4AvmlSTUgeoISNK5CYb8Aq2wObv7VKCth7YUr20mA3ehiFo5XqNZbMNdkjGTaMrNpH/o9pbpZlp0dU7oD4yj3GyO5p1yG87QkGzXLExXiTiTNI9QEA5yMDInHIiIHk5aj6403m3p5BBKKBH8i9cdNuc6N8CKvTtiNuYSHMp1eiXfvN2LLauMy4JLg3h4lPrWh0qd9WUwMSdlWvimpYpxpF5DhSoPLFFFjAn+bL7p7KbLSsCcI0v1r3eU3gfu0fdN031lQ4epz8tIhTrFk9oI=
+    - secure: w33tN2gYuyrGZ4D159JOJ9gx2E0aBMHUUEIuxdhimERSW5Ca8p1Gu+4OVrCqQRR2EPv4PnWuGsf2nPvK9Pmbye2lz5Y6mnoTf00+7wbHtGMHeHHONMENoa/1qA1FhyueeDhinrUEbEARrVsV+IaO0DDYxh2KUp9mJnHlrko0f7cblHr7zWQLknVCk7MKLJAUpr/wbr2dUu7rcq09wTk20ZSy8/i1Ob6tJWQ9gv1bd5QWkrB266l2neTk7v0wmT5G/j9PTZK96Ybi+nQOa8+r2drcv72F//PG3EmbsikHI316GxBqrNsO/4HYeTDK/p5wHNP7dq3o0dF9S4IyoPBAJnWSRDq+34a4sRGjXZy0flqr8sCZjy+Jl3SzqsVLArgdLwpp1Y+vtMc2VuZeVE3gw3K7ohXkXcFElxIOoSKec7jbN8MtEM0akmO6ytJe2wcBhN8y4O14oT+4nrCvbRLYXMZJUtsoyaxjU6cF1cSLLW8TfJH5ZHCFwPTMplBV8JdQsBqYNP+FMKzc3WvS/W+tim1AL+9uPhcRjfRiIUFeuWSXrIozBDxjukmB/mGFhAaCgU5Fjnorn3dXZuyTTx9YQbzBT/rWYVsnYA+Elajn9W1b0I8abJLXyfrk+hgXnaY9Jd704xvFr69Gqfxxnmf0YM08EzvmkMrlVrJXQ0VQs6M=
+
+cache:
+  directories:
+    - _build/
+    - deps/
+
+before_script:
+  - mix deps.compile
+
+script:
+  - mix compile
+  - mix credo
+  - docker build -t apognu/defcon:latest .
+  - docker save -o defcon.tar apognu/defcon:latest
+
+deploy:
+  - provider: script
+    script: bash -c 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker load -i defcon.tar && docker push apognu/defcon:latest'
+    skip_cleanup: true
+    on:
+      branch: master

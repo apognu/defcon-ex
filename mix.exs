@@ -10,7 +10,13 @@ defmodule Defcon.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      releases: [
+        default_release: :default,
+        default: [
+          include_executables_for: [:unix]
+        ]
+      ]
     ]
   end
 
