@@ -18,7 +18,7 @@ defmodule DefconWeb.CheckFormLive do
     {:ok, socket}
   end
 
-  def render(%{check: check} = assigns) do
+  def render(assigns) do
     ChecksView.render("form.html", assigns)
   end
 

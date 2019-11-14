@@ -41,11 +41,12 @@ defmodule Defcon.Schemas.Check do
     field(:interval, :integer)
     field(:passing_threshold, :integer)
     field(:failing_threshold, :integer)
+    field(:ignore, :boolean)
 
     timestamps()
   end
 
-  @required_fields ~w(title enabled interval passing_threshold failing_threshold kind)a
+  @required_fields ~w(title enabled interval passing_threshold failing_threshold kind ignore)a
   @optional_fields ~w(group_id alerter_id)a
 
   def changeset(%Check{} = check, attrs \\ %{}) do
@@ -59,7 +60,7 @@ defmodule Defcon.Schemas.Check do
   def all do
     Repo.all(
       from(c in Check,
-        order_by: [c.inserted_at],
+        order_by: [desc: c.title],
         preload:
           ^[@specs, :group, :alerter, events: from(e in Event, order_by: [desc: e.inserted_at])]
       )
@@ -68,9 +69,8 @@ defmodule Defcon.Schemas.Check do
 
   def by(filter) do
     Repo.one(
-      from(c in Check,
+      from(Check,
         where: ^filter,
-        order_by: [c.inserted_at],
         preload:
           ^[@specs, :group, :alerter, events: from(e in Event, order_by: [desc: e.inserted_at])]
       )
@@ -79,8 +79,9 @@ defmodule Defcon.Schemas.Check do
 
   def all_by(filter) do
     Repo.all(
-      from(Check,
+      from(c in Check,
         where: ^filter,
+        order_by: [desc: c.title],
         preload:
           ^[@specs, :group, :alerter, events: from(e in Event, order_by: [desc: e.inserted_at])]
       )

@@ -27,11 +27,11 @@ defmodule Defcon.Schemas.Group do
   end
 
   def all do
-    Repo.all(from(Group, preload: [:checks]))
+    Repo.all(from(g in Group, order_by: [g.title], preload: [:checks]))
   end
 
   def by(filter) do
-    Repo.one(from(Group, where: ^filter))
+    Repo.one(from(g in Group, where: ^filter, order_by: [g.title]))
   end
 
   def outages_for(%Group{} = group) do

@@ -2,7 +2,7 @@ a.float-right.btn.btn-secondary href="#{Routes.checks_path(@socket, :new)}" New 
 
 h2 Checks
 
-= form_for :filters, "", [phx_change: "filter-group", csrf_token: "", class: "form-inline form-filters"], fn f ->
+= form_for :filters, "", [phx_change: "filter-checks", csrf_token: "", class: "form-inline form-filters"], fn f ->
   .form-group.col-4.offset-4
     = text_input f, "check_title", placeholder: "Search for a check...", autofocus: true, value: assigns[:filter_check_title], class: "form-control"
   .form-group.col-4
@@ -20,7 +20,7 @@ h2 Checks
     
     tbody
       = for check <- @checks do
-        = with {status, class} <- last_check_status(check) do
+        = with status <- last_check_status(check) do
           tr class="enabled-#{check.enabled} #{unless status, do: "table-danger", else: ""}"
             td
               .status

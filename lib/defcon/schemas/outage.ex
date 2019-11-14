@@ -98,7 +98,7 @@ defmodule Defcon.Schemas.Outage do
     on =
       if is_nil(check) do
         dynamic(
-          [o, range],
+          [o, _, range],
           (o.started_on >= range.start and o.started_on < range.end) or
             (o.ended_on >= range.start and o.ended_on < range.end) or
             (o.started_on < range.start and o.ended_on >= range.end) or
@@ -106,7 +106,7 @@ defmodule Defcon.Schemas.Outage do
         )
       else
         dynamic(
-          [o, range],
+          [o, _, range],
           o.check_id == ^check.id and
             ((o.started_on >= range.start and o.started_on < range.end) or
                (o.ended_on >= range.start and o.ended_on < range.end) or
@@ -117,6 +117,8 @@ defmodule Defcon.Schemas.Outage do
 
     Repo.all(
       from(o in Outage,
+        inner_join: c in assoc(o, :check),
+        on: o.check_id == c.id and c.enabled and not c.ignore,
         right_join:
           range in fragment(
             ~s[SELECT range.start AS start, range.start + ? AS end FROM GENERATE_SERIES(?, ?, ?::INTERVAL) range (start)],

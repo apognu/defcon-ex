@@ -5,7 +5,11 @@ defmodule DefconWeb.ChecksController do
   alias Defcon.Schemas.{Group, Check, Outage, Alerter}
 
   def index(conn, _params) do
-    checks = Check.all() |> Enum.map(fn check -> Check.current_outage(check) end)
+    checks =
+      Check.all()
+      |> Enum.map(fn check -> Check.current_outage(check) end)
+      |> Enum.sort_by(fn check -> Enum.empty?(check.outages) end, fn x, _ -> !x end)
+
     groups = Group.all()
 
     live_render(conn, DefconWeb.CheckListLive,

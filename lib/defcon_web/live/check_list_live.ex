@@ -27,16 +27,18 @@ defmodule DefconWeb.CheckListLive do
         "check_title" => socket.assigns[:filter_check_title]
       })
       |> Enum.map(fn check -> Check.current_outage(check) end)
+      |> Enum.sort_by(fn check -> Enum.empty?(check.outages) end, fn x, _ -> !x end)
 
     socket = assign(socket, checks: checks)
 
     {:noreply, socket}
   end
 
-  def handle_event("filter-group", %{"filters" => filters}, socket) do
+  def handle_event("filter-checks", %{"filters" => filters}, socket) do
     checks =
       Check.by_filters(filters)
       |> Enum.map(fn check -> Check.current_outage(check) end)
+      |> Enum.sort_by(fn check -> Enum.empty?(check.outages) end, fn x, _ -> !x end)
 
     socket =
       assign(socket,

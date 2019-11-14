@@ -52,6 +52,12 @@ h2 = if assigns[:title], do: @title, else: "New check"
           = label f, :alerter_id, "Alerter"
           = select f, :alerter_id, Enum.map(@alerters, fn alerter -> {alerter.title, alerter.id} end), prompt: "No alerter...", class: "custom-select"
 
+  .form-group.text-right
+    .pretty.p-switch.p-fill
+      = checkbox f, :ignore
+      .state
+        = label f, :ignore, "Ignore this check for uptime calculations", value: is_enabled?(@changeset)
+
   = if assigns[:kind] do
     = render "_kinds/#{@kind}.html", form: f
   

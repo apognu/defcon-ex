@@ -33,11 +33,7 @@ defmodule DefconWeb.ChecksView do
   end
 
   def last_check_status(%Check{} = check) do
-    if Enum.empty?(check.outages) do
-      {true, "success"}
-    else
-      {false, "danger"}
-    end
+    Enum.empty?(check.outages)
   end
 
   def last_check_message(%Check{} = check) do

@@ -11,8 +11,8 @@ defmodule Defcon.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
+      default_release: :default,
       releases: [
-        default_release: :default,
         default: [
           include_executables_for: [:unix]
         ]

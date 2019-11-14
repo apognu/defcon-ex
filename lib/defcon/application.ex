@@ -4,6 +4,8 @@ defmodule Defcon.Application do
   use Application
 
   def start(_type, _args) do
+    Ecto.Migrator.with_repo(Defcon.Repo, &Ecto.Migrator.run(&1, :up, all: true))
+
     import Supervisor.Spec
 
     children = [
