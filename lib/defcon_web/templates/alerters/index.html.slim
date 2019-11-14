@@ -1,0 +1,19 @@
+a.float-right.btn.btn-secondary href="#{Routes.alerters_path(@conn, :new)}" New alerter
+
+h2 Alerters
+
+.block
+  table.table
+    thead.thead-light
+      tr
+        th.fill Alerter name
+        th Channel
+        th.fit
+    
+    tbody
+      = for alerter <- @alerters do
+        tr
+          td = alerter.title
+          td.actions
+            a.btn.btn-secondary.btn-sm.mr-1 href="#{Routes.alerters_path(@conn, :edit, alerter.uuid)}" Edit
+            = link("Delete", to: Routes.alerters_path(@conn, :delete, alerter.uuid), method: :delete, class: "btn btn-sm btn-danger")

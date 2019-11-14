@@ -1,0 +1,230 @@
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1400px
+);
+
+$theme-colors: (
+  "primary": #74b9ff,
+  "success": #00b894,
+  "warning": #fdcb6e,
+  "danger": #e17055
+);
+
+@import "~bootstrap/scss/bootstrap";
+@import '~pretty-checkbox/src/pretty-checkbox';
+
+body {
+  background: #f7f7f7;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.9em;
+  color: #111111;
+}
+
+h2 {
+  margin-bottom: 16px;
+}
+
+h3 {
+  margin-top: 16px !important;
+  margin-bottom: 8px !important;
+  font-size: 1.4em;
+}
+
+.btn {
+  &.btn-primary {
+    color: white;
+  }
+}
+
+.block {
+  margin: 16px 0 32px 0;
+  padding: 16px;
+  background: white;
+
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.16),0 0 2px 0 rgba(0,0,0,.12);
+
+  &.pb {
+    padding-bottom: 32px;
+  }
+
+  > * {
+    margin: 0;
+  }
+}
+
+form {
+  &.form-inline.form-filters {
+    .form-control, .custom-select {
+      width: 100% !important;
+    }
+  }
+}
+
+table {
+  br {
+    margin: 4px 0;
+  }
+
+  tr {
+    &.enabled-false {
+      color: #acacac;
+    }
+  }
+
+  td, th {
+    white-space: nowrap;
+
+    &.fill {
+      width: 100%;
+      max-width: 100%;;
+    }
+
+    &.wrap {
+      white-space: initial;
+    }
+  }
+
+  td {
+    vertical-align: middle !important;
+
+    &.actions {
+      text-align: right;  
+    }
+
+    a {
+      color: inherit;
+
+      &:hover {
+        color: inherit;
+      }
+    }
+  }
+}
+
+#main.container-fluid {
+  padding: 0;
+}
+
+#content.container {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+span.badge {
+  padding: 4px 6px;
+  font-size: 1em !important;
+}
+
+code.check-type {
+  padding: 4px 8px;
+  background: #343434;
+  border-radius: 2px;
+  color: white;
+}
+
+.navbar {
+  .status {
+    padding: .5rem 1rem;
+    color: white;
+  }
+}
+
+.status {
+  .led {
+    display: inline-block;
+    margin-right: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+
+    &.status-outages {
+      background: map-get($theme-colors, "danger");
+    }
+
+    &.status-operational {
+      background: map-get($theme-colors, "success");
+    }
+  }
+}
+
+.placeholder {
+  margin: 64px 0;
+  text-align: center;
+
+  h4 {
+    margin: 0;
+  }
+}
+
+.uptime-graph-pill-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.uptime-graph {
+  display: flex;
+  flex-direction: row;
+  
+  &.squares {
+    &.b-12 span {
+      width: calc(100% / 12);
+      padding-top: calc(100% / 12 - (12 * 2px));
+    }
+
+    &.b-7 span {
+      width: calc(100% / 7);
+      padding-top: calc(100% / 7 - (7 * 2px));
+    }
+    
+    span {
+      margin: 0 1px;
+    }
+  }
+
+  &.pills {
+    flex: 1;
+    
+    span {
+      display: inline-block;
+      width: 100%;
+      margin: 0 1px;
+      padding-top: calc(100% / 72);
+      border-radius: 20px;
+    }
+  }
+
+  span {
+    &.status-operational {
+      background: map-get($theme-colors, "success");
+    }
+    
+    &.status-outages {
+      background: map-get($theme-colors, "danger");
+    }
+  }
+}
+
+.figure {
+  font-size: 3em;
+  color: #343434;
+}
+
+.navbar {
+  display: flex;
+
+  div[data-phx-view="GlobalStatusLive"] {
+    display: flex;
+    flex: 1;
+
+    > span {
+      flex: 1;
+      text-align: right;
+    }
+  }
+}
+
+.group_title {
+  color: #525252;
+}

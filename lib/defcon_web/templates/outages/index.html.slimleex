@@ -1,0 +1,26 @@
+= if Enum.empty?(@outages) do
+  .placeholder
+    .status.mb-3: div.led.status-operational
+    h4 Breath in
+    p Everything seems to be going okay
+- else
+  h2 Outages
+  
+  .block
+    table.table
+      thead.thead-light
+        tr
+          th
+          th Check title
+          th.fill Message
+          th Last run
+      
+      = for outage <- @outages do
+        tr
+          td: .status: span.led.status-outages
+          td
+            b = outage.check.title
+            br
+            = outage.check.group.title
+          td.wrap = outage.event.message
+          td = Timex.format!(outage.event.inserted_at, "%d %b %Y, %H:%M:%S", :strftime)

@@ -1,0 +1,60 @@
+h2 = if assigns[:title], do: @title, else: "New check"
+
+= form_for @changeset, @action, [csrf_token: @csrf_token, phx_change: :update], fn f ->
+  .form-group.text-right
+    .pretty.p-switch.p-fill
+      = checkbox f, :enabled
+      .state
+        = label f, :enabled, "Enable check", value: is_enabled?(@changeset)
+  
+  .block
+    .row: .col: h3 Classification
+    
+    .row
+      .col
+        .form-group
+          = label f, :title, "Check title:"
+          = text_input f, :title, class: "form-control"
+
+      .col
+        .form-group
+          = label f, :group_id, "Check group:"
+          = select f, :group_id, Enum.map(@groups, fn group -> {group.title, group.id} end), prompt: "No group...", class: "custom-select"
+
+    .row: .col: h3 Thresholds
+
+    .row
+      .col
+        .form-group
+          = label f, :failing_threshold, "Failing threshold"
+          = text_input f, :failing_threshold, type: "number", class: "form-control"
+          small.form-text.text-muted Service will be considered critical after this number of failed checks
+      
+      .col
+        .form-group
+          = label f, :passing_threshold, "Recovery threshold"
+          = text_input f, :passing_threshold, type: "number", class: "form-control"
+          small.form-text.text-muted Outage will be considered resolved after this number of passed checks
+
+      .col
+        .form-group
+          = label f, :interval, "Check interval (in seconds)"
+          = text_input f, :interval, type: "number", class: "form-control"
+    
+    .row
+      .col
+        .form-group
+          = label f, :kind, "Check type"
+          = select f, :kind, Enum.map(@kinds, fn {slug, label} -> {label, slug} end), prompt: "Select a type...", class: "custom-select"
+      
+      .col
+        .form-group
+          = label f, :alerter_id, "Alerter"
+          = select f, :alerter_id, Enum.map(@alerters, fn alerter -> {alerter.title, alerter.id} end), prompt: "No alerter...", class: "custom-select"
+
+  = if assigns[:kind] do
+    = render "_kinds/#{@kind}.html", form: f
+  
+
+  .form-group.text-right
+    = submit "Save check", class: "btn btn-primary"

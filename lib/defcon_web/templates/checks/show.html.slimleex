@@ -1,0 +1,62 @@
+a.float-right.btn.btn-secondary href="#{Routes.checks_path(@socket, :edit, @check.uuid)}" Edit
+
+h2
+  span.group_title = @check.group.title
+  = " / " 
+  = @check.title
+
+= if is_nil(@outages) do
+  .placeholder
+    .status.mb-3: .led.status-operational
+    h4 Breath in
+    p This service seems to be going okay
+- else
+  .placeholder
+    .status.mb-3: .led.status-outages
+    h4 This check is failing
+    p This service requires your attention
+
+.block.pb
+  .row
+    .col-6.text-center
+      h3 Hourly uptime for last 30 days
+      span.figure = "#{uptime_rate(@stats_30d)} %"
+    
+    .col-6.text-center
+      h3 Daily uptime for last 7 days
+      span.figure = "#{uptime_rate(@stats_1w)} %"
+
+.block.pb
+  .row
+    .col-4
+      h3 Last week
+      
+      .uptime-graph.squares.b-7
+        = for [bucket, count] <- @stats_1w do
+          span class="status-#{if count == 0, do: "operational", else: "outages"}" data-toggle="tooltip" data-placement="bottom" title="#{format_date(bucket, "%d %b %Y")}"
+  
+    .col-8.uptime-graph-pill-container
+      h3 Last 72 hours
+
+      .uptime-graph.pills
+        = for [bucket, count] <- @stats_72h do
+          span class="status-#{if count == 0, do: "operational", else: "outages"}" data-toggle="tooltip" data-placement="bottom" title="#{format_date(bucket, "%d %b, %H:%M")}"
+
+.block
+  table.table
+    thead.thead-light
+      tr
+        th = "Event date (#{Timex.Timezone.local().abbreviation})"
+        th Status
+        th.fill Message
+
+    tbody
+      = for event <- Enum.take(@check.events, 15) do
+        tr
+          td = format_date(event.inserted_at)
+          td
+            = if event.status == 0 do
+              span.badge.badge-success Success
+            - else
+              span.badge.badge-danger Critical
+          td = event.message

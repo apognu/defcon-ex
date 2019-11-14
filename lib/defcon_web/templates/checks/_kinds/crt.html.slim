@@ -1,0 +1,10 @@
+= inputs_for @form, :crt_spec, fn f ->
+  .block
+    .row: .col: h3 Certificates issuance
+    
+    .row
+      .col
+        .form-group
+          = label f, :domain, "Domain"
+          = text_input f, :domain, class: "form-control"
+          small.form-text.text-muted Only one domain name, specify wildcard as "%.domain.tld"

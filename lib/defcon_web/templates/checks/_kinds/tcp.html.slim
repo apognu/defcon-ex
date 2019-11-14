@@ -1,0 +1,14 @@
+= inputs_for @form, :tcp_spec, fn f ->
+  .block
+    .row: .col: h3 TCP port
+    
+    .row
+      .col-6
+        .form-group
+          = label f, :host, "Host"
+          = text_input f, :host, class: "form-control"
+      
+      .col-6
+        .form-group
+          = label f, :port, "Port"
+          = text_input f, :port, class: "form-control"

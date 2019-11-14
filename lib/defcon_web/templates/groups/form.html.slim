@@ -1,0 +1,11 @@
+h2 Edit group
+
+= form_for @changeset, @action, [csrf_token: @csrf_token], fn f ->
+  .row
+    .col
+      .form-group
+        = label f, :title, "Group title:"
+        = text_input f, :title, class: "form-control"
+
+  .form-group.text-right
+    = submit "Save group", class: "btn btn-primary"

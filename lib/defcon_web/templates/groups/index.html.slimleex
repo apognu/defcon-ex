@@ -1,0 +1,33 @@
+a.float-right.btn.btn-secondary href="#{Routes.groups_path(@socket, :new)}" New group
+
+h2 Groups
+
+.block
+  table.table
+    thead.thead-light
+      tr
+        th
+        th.fill Group title
+        th # of checks
+        th Outages
+        th.fit
+    
+    tbody
+      = for group <- @groups do
+        tr class="#{if @group_outages[group.id] > 0, do: "table-danger", else: ""}"
+          td
+            .status
+              = if @group_outages[group.id] > 0 do
+                .led.status-outages
+              - else
+                .led.status-operational
+          td = group.title
+          td = "#{length(group.checks)} checks"
+          td
+            = if @group_outages[group.id] > 0 do
+              = "#{@group_outages[group.id]} checks failed"
+            - else
+              | All is fine
+          td.actions
+            a.btn.btn-secondary.btn-sm.mr-1 href="#{Routes.groups_path(@socket, :edit, group.uuid)}" Edit
+            = link("Delete", to: Routes.groups_path(@socket, :delete, group.uuid), method: :delete, csrf_token: @csrf_token, class: "btn btn-sm btn-danger")

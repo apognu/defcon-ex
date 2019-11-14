@@ -1,0 +1,9 @@
+= inputs_for @form, :play_store_spec, fn f ->
+  .block
+    .row: .col: h3 Google Play Store
+    
+    .row
+      .col
+        .form-group
+          = label f, :app_id, "App ID"
+          = text_input f, :app_id, class: "form-control"
