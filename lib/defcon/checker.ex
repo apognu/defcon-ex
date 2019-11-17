@@ -62,7 +62,12 @@ defmodule Defcon.Checker do
 
             {params, recovered} =
               if strikes >= outage.check.passing_threshold do
-                {Map.put(params, :ended_on, DateTime.truncate(Timex.now(), :second)), true}
+                recovered =
+                  if outage.failing_strikes >= outage.check.failing_threshold,
+                    do: true,
+                    else: false
+
+                {Map.put(params, :ended_on, DateTime.truncate(Timex.now(), :second)), recovered}
               else
                 {params, false}
               end
