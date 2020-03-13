@@ -8,6 +8,7 @@ defmodule Defcon.Schemas.Alerter do
   alias Defcon.Repo
   alias Defcon.Schemas.Alerter
 
+  @derive {Jason.Encoder, only: ~w(id uuid title api_key channel)a}
   schema "alerters" do
     field(:uuid, :string)
     field(:title, :string)

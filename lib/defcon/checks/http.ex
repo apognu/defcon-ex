@@ -53,7 +53,12 @@ defmodule Defcon.Checks.HTTP do
         status(error(), messages)
       end
     rescue
-      e -> status(error(), "Unknown error: #{to_string(e)}")
+      e in Protocol.UndefinedError ->
+        {_, {_, value}} = e.value
+        status(error(), to_string(value))
+
+      e ->
+        status(error(), "Unknown error: #{{to_string(e)}}")
     end
   end
 

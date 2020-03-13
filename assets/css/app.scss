@@ -1,18 +1,5 @@
-$container-max-widths: (
-  sm: 540px,
-  md: 720px,
-  lg: 960px,
-  xl: 1400px
-);
-
-$theme-colors: (
-  "primary": #74b9ff,
-  "success": #00b894,
-  "warning": #fdcb6e,
-  "danger": #e17055
-);
-
-@import "~bootstrap/scss/bootstrap";
+@import '@/../css/common.scss';
+@import '~bootstrap/scss/bootstrap';
 @import '~pretty-checkbox/src/pretty-checkbox';
 
 body {
@@ -78,11 +65,30 @@ table {
 
     &.fill {
       width: 100%;
-      max-width: 100%;;
+      max-width: 100%;
     }
 
     &.wrap {
       white-space: initial;
+    }
+
+    &.ellipsis {
+      position: relative;
+
+      &:before {
+        content: '&nbsp;';
+        visibility: hidden;
+        width: 0;
+      }
+
+      span {
+        position: absolute;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
   }
 
@@ -90,7 +96,7 @@ table {
     vertical-align: middle !important;
 
     &.actions {
-      text-align: right;  
+      text-align: right;
     }
 
     a {
@@ -124,10 +130,48 @@ code.check-type {
   color: white;
 }
 
+.placeholder {
+  margin: 64px 0;
+  text-align: center;
+
+  h4 {
+    margin: 0;
+  }
+}
+
+.uptime-graph-pill-container {
+  display: flex;
+
+  > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 .navbar {
+  display: flex;
+
   .status {
     padding: .5rem 1rem;
     color: white;
+  }
+
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+
+    .navbar-nav {
+      flex-direction: row;
+
+      li {
+        margin: 0 8px;
+      }
+    }
+
+    .status {
+      margin: auto !important;
+    }
   }
 }
 
@@ -147,84 +191,4 @@ code.check-type {
       background: map-get($theme-colors, "success");
     }
   }
-}
-
-.placeholder {
-  margin: 64px 0;
-  text-align: center;
-
-  h4 {
-    margin: 0;
-  }
-}
-
-.uptime-graph-pill-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.uptime-graph {
-  display: flex;
-  flex-direction: row;
-  
-  &.squares {
-    &.b-12 span {
-      width: calc(100% / 12);
-      padding-top: calc(100% / 12 - (12 * 2px));
-    }
-
-    &.b-7 span {
-      width: calc(100% / 7);
-      padding-top: calc(100% / 7 - (7 * 2px));
-    }
-    
-    span {
-      margin: 0 1px;
-    }
-  }
-
-  &.pills {
-    flex: 1;
-    
-    span {
-      display: inline-block;
-      width: 100%;
-      margin: 0 1px;
-      padding-top: calc(100% / 72);
-      border-radius: 20px;
-    }
-  }
-
-  span {
-    &.status-operational {
-      background: map-get($theme-colors, "success");
-    }
-    
-    &.status-outages {
-      background: map-get($theme-colors, "danger");
-    }
-  }
-}
-
-.figure {
-  font-size: 3em;
-  color: #343434;
-}
-
-.navbar {
-  display: flex;
-
-  div[data-phx-view="GlobalStatusLive"] {
-    display: flex;
-    flex: 1;
-
-    > span {
-      flex: 1;
-      text-align: right;
-    }
-  }
-}
-
-.group_title {
-  color: #525252;
 }

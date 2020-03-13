@@ -7,6 +7,7 @@ defmodule Defcon.Schemas.TLSSpec do
 
   alias Defcon.Schemas.{Check, TLSSpec}
 
+  @derive {Jason.Encoder, only: ~w(id domains window)a}
   schema "tls_specs" do
     belongs_to(:check, Check)
 

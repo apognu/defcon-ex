@@ -1,7 +1,10 @@
 defmodule Defcon.Schemas.Outage do
   @moduledoc false
 
+  @serialize ~w(uuid check event started_on ended_on)a
+
   use Ecto.Schema
+  use Defcon.Schemas.FilterNotLoaded, attrs: @serialize
 
   import Ecto.{Query, Changeset}
 
@@ -28,12 +31,58 @@ defmodule Defcon.Schemas.Outage do
     |> generate_uuid()
   end
 
-  def currents do
+  def currents(all \\ true) do
+    where =
+      case all do
+        true ->
+          dynamic(
+            [o, c],
+            c.enabled and o.failing_strikes >= c.failing_threshold and is_nil(o.ended_on)
+          )
+
+        false ->
+          dynamic(
+            [o, c],
+            c.enabled and not c.ignore and o.failing_strikes >= c.failing_threshold and
+              is_nil(o.ended_on)
+          )
+      end
+
     Repo.all(
       from(o in Outage,
         join: c in Check,
         on: c.id == o.check_id,
-        where: c.enabled and o.failing_strikes >= c.failing_threshold and is_nil(o.ended_on),
+        where: ^where,
+        preload: [:event, check: [:group]]
+      )
+    )
+  end
+
+  def history do
+    Repo.all(
+      from(o in Outage,
+        join: c in Check,
+        on: c.id == o.check_id,
+        where: c.enabled and o.failing_strikes >= c.failing_threshold,
+        order_by: [desc: o.started_on],
+        limit: 30,
+        preload: [:event, check: [:group]]
+      )
+    )
+  end
+
+  def range(from, to) do
+    Repo.all(
+      from(o in Outage,
+        join: c in Check,
+        on: c.id == o.check_id,
+        where:
+          c.enabled and o.failing_strikes >= c.failing_threshold and
+            ((o.started_on < ^from and o.ended_on > ^from) or
+               (o.started_on < ^to and o.ended_on > ^to) or
+               (o.started_on > ^from and o.ended_on < ^to) or
+               (o.started_on < ^to and is_nil(o.ended_on))),
+        order_by: [desc: o.started_on],
         preload: [:event, check: [:group]]
       )
     )
@@ -98,7 +147,7 @@ defmodule Defcon.Schemas.Outage do
     on =
       if is_nil(check) do
         dynamic(
-          [o, _, range],
+          [o, c, range],
           (o.started_on >= range.start and o.started_on < range.end) or
             (o.ended_on >= range.start and o.ended_on < range.end) or
             (o.started_on < range.start and o.ended_on >= range.end) or
@@ -106,7 +155,7 @@ defmodule Defcon.Schemas.Outage do
         )
       else
         dynamic(
-          [o, _, range],
+          [o, c, range],
           o.check_id == ^check.id and
             ((o.started_on >= range.start and o.started_on < range.end) or
                (o.ended_on >= range.start and o.ended_on < range.end) or
@@ -118,7 +167,9 @@ defmodule Defcon.Schemas.Outage do
     Repo.all(
       from(o in Outage,
         inner_join: c in assoc(o, :check),
-        on: o.check_id == c.id and c.enabled and not c.ignore,
+        on:
+          o.check_id == c.id and c.enabled and not c.ignore and
+            o.failing_strikes >= c.failing_threshold,
         right_join:
           range in fragment(
             ~s[SELECT range.start AS start, range.start + ? AS end FROM GENERATE_SERIES(?, ?, ?::INTERVAL) range (start)],

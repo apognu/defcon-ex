@@ -1,14 +1,6 @@
 defmodule Defcon.Schemas.Check do
   @moduledoc false
 
-  use Ecto.Schema
-
-  import Ecto.{Changeset, Query}
-
-  alias Defcon.Repo
-  alias Defcon.Schemas.{Group, Check, Outage, Event, Alerter}
-  alias Defcon.Schemas.{HTTPSpec, PlayStoreSpec, AppStoreSpec, TLSSpec, CRTSpec, TCPSpec}
-
   @kinds [
     {"http", "HTTP request"},
     {"app_store", "Apple App Store"},
@@ -19,6 +11,16 @@ defmodule Defcon.Schemas.Check do
   ]
 
   @specs ~w(http_spec play_store_spec app_store_spec tls_spec crt_spec tcp_spec)a
+  @serialize ~w(uuid title kind enabled interval failing_threshold passing_threshold ignore group alerter outages events)a
+
+  use Ecto.Schema
+  use Defcon.Schemas.FilterNotLoaded, attrs: @serialize ++ @specs
+
+  import Ecto.{Changeset, Query}
+
+  alias Defcon.Repo
+  alias Defcon.Schemas.{Group, Check, Outage, Event, Alerter}
+  alias Defcon.Schemas.{HTTPSpec, PlayStoreSpec, AppStoreSpec, TLSSpec, CRTSpec, TCPSpec}
 
   schema "checks" do
     belongs_to(:group, Group)
@@ -57,38 +59,35 @@ defmodule Defcon.Schemas.Check do
     |> validate_required(@required_fields)
   end
 
-  def all do
+  def all(detail \\ :full) do
     Repo.all(
       from(c in Check,
         order_by: [desc: c.title],
-        preload:
-          ^[@specs, :group, :alerter, events: from(e in Event, order_by: [desc: e.inserted_at])]
+        preload: ^build_preload_list(detail)
       )
     )
   end
 
-  def by(filter) do
+  def by(filter, detail \\ :full) do
     Repo.one(
       from(Check,
         where: ^filter,
-        preload:
-          ^[@specs, :group, :alerter, events: from(e in Event, order_by: [desc: e.inserted_at])]
+        preload: ^build_preload_list(detail)
       )
     )
   end
 
-  def all_by(filter) do
+  def all_by(filter, detail \\ :full) do
     Repo.all(
       from(c in Check,
         where: ^filter,
         order_by: [desc: c.title],
-        preload:
-          ^[@specs, :group, :alerter, events: from(e in Event, order_by: [desc: e.inserted_at])]
+        preload: ^build_preload_list(detail)
       )
     )
   end
 
-  def by_filters(filters) do
+  def by_filters(filters, detail \\ :full) do
     filters =
       filters
       |> Enum.reduce(dynamic(true), fn {filter, value}, acc ->
@@ -108,7 +107,7 @@ defmodule Defcon.Schemas.Check do
         end
       end)
 
-    all_by(filters)
+    all_by(filters, detail)
   end
 
   def outdated do
@@ -128,7 +127,8 @@ defmodule Defcon.Schemas.Check do
         where:
           c.enabled and
             (is_nil(r.inserted_at) or
-               r.inserted_at < fragment("NOW() - ? * INTERVAL '1 second'", c.interval))
+               r.inserted_at <
+                 fragment("NOW() AT TIME ZONE 'UTC' - ? * INTERVAL '1 second'", c.interval))
       )
     )
   end
@@ -188,6 +188,35 @@ defmodule Defcon.Schemas.Check do
       "crt" -> cast_assoc(changeset, :crt_spec, required: true)
       "tcp" -> cast_assoc(changeset, :tcp_spec, required: true)
       _ -> changeset
+    end
+  end
+
+  defp build_preload_list(detail) do
+    events =
+      from(
+        x in subquery(
+          from(e in Event,
+            select: %Event{e | rn: over(row_number(), :check)},
+            windows: [check: [partition_by: e.check_id, order_by: [desc: e.inserted_at]]]
+          )
+        ),
+        where: fragment("rn < 30")
+      )
+
+    case detail do
+      :simple ->
+        [
+          :group,
+          events: events
+        ]
+
+      _ ->
+        [
+          @specs,
+          :group,
+          :alerter,
+          events: events
+        ]
     end
   end
 end

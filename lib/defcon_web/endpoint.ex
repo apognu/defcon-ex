@@ -3,8 +3,6 @@ defmodule DefconWeb.Endpoint do
 
   use Phoenix.Endpoint, otp_app: :defcon
 
-  socket "/live", Phoenix.LiveView.Socket
-
   plug Plug.Static,
     at: "/",
     from: :defcon,

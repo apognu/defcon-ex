@@ -13,15 +13,6 @@ config :defcon, DefconWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  pubsub: [
-    adapter: Phoenix.PubSub.PG2,
-    pool_size: 1,
-    name: Defcon.Pubsub
-  ],
-  live_view: [
-    signing_salt:
-      "NThmZmEyYzM3ZTVlZjM0NjIyZjMwYTBjYzZmZjU5YThhNGM0M2U4ZjhhYzNiNmNkMGMwNWI0NGRiODFkM2ZlZQo="
-  ],
   watchers: [
     node: [
       "node_modules/webpack/bin/webpack.js",
@@ -37,7 +28,7 @@ config :defcon, DefconWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/defcon_web/{live,views}/.*(ex)$",
+      ~r"lib/defcon_web/{views}/.*(ex)$",
       ~r"lib/defcon_web/templates/.*(eex|slim|slime|leex)$"
     ]
   ]

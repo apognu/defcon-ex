@@ -7,6 +7,7 @@ defmodule Defcon.Schemas.CRTSpec do
 
   alias Defcon.Schemas.{Check, CRTSpec}
 
+  @derive {Jason.Encoder, only: ~w(id domain)a}
   schema "crt_specs" do
     belongs_to(:check, Check)
 

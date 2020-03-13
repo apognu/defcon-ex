@@ -4,36 +4,14 @@ html lang="en"
     meta charset="utf-8"
     meta http-equiv="X-UA-Compatible" content="IE=edge"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
-    
+
     title Defcon
-    
+
     link rel="stylesheet" href="#{Routes.static_path(@conn, "/css/app.css")}"
     link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap"
 
-  
   body
     #main.container-fluid
-      .navbar.navbar-expand-lg.navbar-dark.bg-dark
-        a.navbar-brand href="#" Defcon
-
-        ul.navbar-nav
-          li.nav-item: a.nav-link href="#{Routes.dashboard_path(@conn, :index)}" Dashboard
-          li.nav-item: a.nav-link href="#{Routes.outages_path(@conn, :index)}" Outages
-
-          li.nav-item.dropdown
-            a#navbar-settings.nav-link.dropdown-toggle href="#" data-toggle="dropdown" Settings
-            .dropdown-menu
-              a.dropdown-item href="#{Routes.groups_path(@conn, :index)}" Groups
-              a.dropdown-item href="#{Routes.checks_path(@conn, :index)}" Checks
-              a.dropdown-item href="#{Routes.alerters_path(@conn, :index)}" Alerters
-
-        = Phoenix.LiveView.live_render(@conn, DefconWeb.GlobalStatusLive, session: [has_outages: @has_outages])
-        
-      #content.container
-        = if flash = get_flash(@conn, :flash) do
-          - {type, message} = flash
-            .alert class="alert-#{type}" = message
-
-        = render @view_module, @view_template, assigns
+      App#app
 
     script type="text/javascript" src="#{Routes.static_path(@conn, "/js/app.js")}"

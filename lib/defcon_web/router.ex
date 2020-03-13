@@ -17,15 +17,23 @@ defmodule DefconWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/api", DefconWeb.Api do
+    pipe_through :api
+
+    get "/dashboard", DashboardController, :status
+    get "/outages", OutagesController, :currents
+    get "/outages/history", OutagesController, :history
+    get "/outages/range/:from/:range", OutagesController, :range
+
+    resources "/groups", GroupsController, only: ~w(index show create update delete)a
+    resources "/alerters", AlertersController, only: ~w(index show create update delete)a
+    get "/checks/kinds", ChecksController, :kinds
+    resources "/checks", ChecksController, only: ~w(index show create update delete)a
+  end
+
   scope "/", DefconWeb do
     pipe_through :browser
 
-    get "/", DashboardController, :index
-
-    get "/outages", OutagesController, :index
-
-    resources "/groups", GroupsController, except: ~w(show)a
-    resources "/checks", ChecksController
-    resources "/alerters", AlertersController, except: ~w(show)a
+    get "/*path", FrontendController, :index
   end
 end

@@ -7,7 +7,6 @@ defmodule DefconWeb do
 
       import Plug.Conn
       import DefconWeb.Gettext
-      import Phoenix.LiveView.Controller
 
       alias DefconWeb.Router.Helpers, as: Routes
     end
@@ -23,7 +22,6 @@ defmodule DefconWeb do
       use Phoenix.HTML
 
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
-      import Phoenix.LiveView, only: [live_render: 2, live_render: 3]
       import DefconWeb.Helpers
       import DefconWeb.ErrorHelpers
       import DefconWeb.Gettext
@@ -38,7 +36,6 @@ defmodule DefconWeb do
 
       import Plug.Conn
       import Phoenix.Controller
-      import Phoenix.LiveView.Router
     end
   end
 

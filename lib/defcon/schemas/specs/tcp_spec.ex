@@ -7,6 +7,7 @@ defmodule Defcon.Schemas.TCPSpec do
 
   alias Defcon.Schemas.{Check, TCPSpec}
 
+  @derive {Jason.Encoder, only: ~w(id host port)a}
   schema "tcp_specs" do
     belongs_to(:check, Check)
 

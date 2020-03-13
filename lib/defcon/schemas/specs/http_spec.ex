@@ -7,6 +7,7 @@ defmodule Defcon.Schemas.HTTPSpec do
 
   alias Defcon.Schemas.{Check, HTTPSpec}
 
+  @derive {Jason.Encoder, only: ~w(id url expected_code expected_content)a}
   schema "http_specs" do
     belongs_to(:check, Check)
 

@@ -54,11 +54,7 @@ unless Enum.empty?(missing_envs) do
   System.halt(1)
 end
 
-config :defcon, DefconWeb.Endpoint,
-  url: [host: Helper.get("HOST")],
-  live_view: [
-    signing_salt: Helper.get("SIGNING_SALT")
-  ]
+config :defcon, DefconWeb.Endpoint, url: [host: Helper.get("HOST")]
 
 config :defcon, Defcon.Repo,
   hostname: Helper.get("DB_HOST"),

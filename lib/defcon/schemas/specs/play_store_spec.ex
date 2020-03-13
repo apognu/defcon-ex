@@ -7,6 +7,7 @@ defmodule Defcon.Schemas.PlayStoreSpec do
 
   alias Defcon.Schemas.{Check, PlayStoreSpec}
 
+  @derive {Jason.Encoder, only: ~w(id app_id)a}
   schema "play_store_specs" do
     belongs_to(:check, Check)
 

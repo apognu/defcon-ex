@@ -17,12 +17,10 @@ config :phoenix, :json_library, Jason
 
 config :phoenix, :template_engines,
   slim: PhoenixSlime.Engine,
-  slime: PhoenixSlime.Engine,
-  slimleex: PhoenixSlime.LiveViewEngine,
-  leex: Phoenix.LiveView.Engine
+  slime: PhoenixSlime.Engine
 
 config :defcon,
-  check_interval: 60 * 1000,
+  check_interval: 5 * 1000,
   cleaner_interval: 3600 * 1000,
   event_history: 24
 

@@ -31,14 +31,13 @@ defmodule Defcon.MixProject do
 
   defp deps do
     [
-      {:phoenix, "~> 1.4.10"},
+      {:phoenix, "~> 1.4.11"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, git: "https://github.com/phoenixframework/phoenix_live_view"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:poison, "~> 3.1", override: true},

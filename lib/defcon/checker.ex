@@ -131,4 +131,8 @@ defmodule Defcon.Checker do
 
     {:noreply, %{}}
   end
+
+  def handle_info(:tick, state) do
+    {:noreply, state}
+  end
 end

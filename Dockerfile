@@ -29,7 +29,7 @@ RUN \
 COPY . .
 
 RUN \
-  mix release --overwrite default && \
+  MIX_ENV=prod mix release --overwrite default && \
   mv _build/prod/rel/default /opt/release && \
   ln -s /opt/release/bin/default /opt/release/bin/run
 

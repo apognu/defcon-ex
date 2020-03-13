@@ -8,6 +8,7 @@ defmodule Defcon.Schemas.Event do
   alias Defcon.Repo
   alias Defcon.Schemas.{Check, Event, Outage}
 
+  @derive {Jason.Encoder, only: ~w(status message inserted_at)a}
   schema "events" do
     belongs_to(:check, Check)
     has_one(:outage, Outage)
@@ -16,6 +17,8 @@ defmodule Defcon.Schemas.Event do
     field(:message, :string)
 
     timestamps()
+
+    field(:rn, :integer, virtual: true)
   end
 
   def failed_for_outage(%Outage{} = outage) do

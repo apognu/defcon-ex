@@ -1,7 +1,10 @@
 defmodule Defcon.Schemas.Group do
   @moduledoc false
 
+  @serialize ~w(id uuid title checks)a
+
   use Ecto.Schema
+  use Defcon.Schemas.FilterNotLoaded, attrs: @serialize
 
   import Ecto.{Changeset, Query}
 
@@ -40,7 +43,7 @@ defmodule Defcon.Schemas.Group do
         left_join: c in Check,
         on: [id: o.check_id],
         where:
-          c.group_id == ^group.id and is_nil(o.ended_on) and
+          c.enabled and not c.ignore and c.group_id == ^group.id and is_nil(o.ended_on) and
             o.failing_strikes >= c.failing_threshold
       )
     )

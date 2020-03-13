@@ -1,9 +1,0 @@
-.status.navbar-text.mr-auto
-  = if @has_outages do
-    span.led.status-outages
-    | Some systems critical
-  - else
-    span.led.status-operational
-    | All systems operational
-
-span.navbar-text = "Last updated on #{format_date(@current_time)}"
